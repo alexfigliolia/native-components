@@ -3,7 +3,7 @@ import { State } from "@figliolia/galena";
 import { EventCache } from "EventCache";
 
 export class WebComponent<
-  T extends Record<string, string>,
+  T extends Record<string, string> = Record<string, string>,
 > extends HTMLElement {
   private StateInstances: State[] = [];
   private EventCache = new EventCache();
@@ -29,8 +29,10 @@ export class WebComponent<
     _newValue: T[K],
   ) {}
 
-  public override getAttribute<K extends keyof T>(name: K): string | null {
-    return this.getAttribute(name) || this.defaultProps[name] || null;
+  public override getAttribute<K extends Extract<keyof T, string>>(
+    name: K,
+  ): string | null {
+    return super.getAttribute(name) || this.defaultProps[name] || null;
   }
 
   public readonly defaultProps: Optionals<T> = {};
